@@ -1,9 +1,8 @@
 from core.dados import validar_entrada
-from core.estado import atualizar_estado, estado
-from core.estrategias import analisar_estrategias
-from core.risco import atualizar_risco, verificar_limites, resetar_risco
+from core.engine import processar_entrada
+from core.risco import resetar_risco
+from core.estado import estado
 from config import settings
-from logs.logger import registrar_entrada
 
 # Inicialização
 resetar_risco()
@@ -12,48 +11,25 @@ estado["total_jogadas"] = 0
 estado["contagem"] = {"P":0,"B":0}
 estado["sequencia_atual"] = {"tipo":None,"tamanho":0}
 
-print(f"Bot iniciado! Banca inicial: {settings.BANCA_INICIAL}, Aposta base: {settings.APOSTA_BASE}\n")
+print(f"Bot iniciado! Banca inicial: {settings.BANCA_INICIAL}\n")
 
 while True:
-    entrada = input("Resultado (P/B) ou Q para sair: ").strip().upper()
+    entrada = input("Resultado (P/B) ou Q: ").strip().upper()
+
     if entrada == "Q":
-        print("Encerrando bot...")
         break
 
     resultado = validar_entrada(entrada)
     if not resultado:
-        print("Entrada inválida. Use apenas P ou B.\n")
+        print("Entrada inválida\n")
         continue
 
-    # Atualiza histórico e estado
-    atualizar_estado(resultado)
+    resposta = processar_entrada(resultado)
 
-    # Detecta estratégias
-    analise = analisar_estrategias(estado["historico"])
-    total_pontos = sum(item["pontos"] for item in analise)
-    padrao_forte = max(analise, key=lambda x: x["pontos"])["tipo"] if analise else None
+    print("\n--- RESULTADO ---")
+    print(resposta)
+    print("-----------------\n")
 
-    # Atualiza risco usando aposta base (simulação de vitória ou perda)
-    # Aqui você pode trocar "win"/"lose" dependendo da lógica futura
-    atualizar_risco(settings.APOSTA_BASE, "win")
-    limites_ok = verificar_limites()
-
-    # Registra no log
-    registrar_entrada(resultado["valor"], total_pontos, padrao_forte)
-
-    # Exibe informações ao usuário
-    print("\n--- ESTADO ATUAL ---")
-    print("Histórico:", estado["historico"])
-    print("Sequência atual:", estado["sequencia_atual"])
-    print("Contagem:", estado["contagem"])
-    print("--- ESTRATÉGIAS ---")
-    for item in analise:
-        print(f"{item['tipo']} → Pontos: {item['pontos']}")
-    print(f"Pontuação total: {total_pontos}")
-    print(f"Padrão mais forte: {padrao_forte}")
-    print(f"Limites de risco ok? {'Sim' if limites_ok else 'Não'}")
-    print("---------------------\n")
-
-    if not limites_ok:
-        print("Atingiu limite de perda ou lucro! Bot será encerrado automaticamente.")
+    if not resposta["risco"]["limites_ok"]:
+        print("Limite atingido. Encerrando.")
         break
