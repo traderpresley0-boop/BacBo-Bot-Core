@@ -35,8 +35,14 @@ async function atualizarEstado() {
         pontosSpan.textContent = "-";
         padraoSpan.textContent = "-";
 
-        // Risco
+        // Risco com cores de alerta
         riscoSpan.textContent = `Banca: ${data.risco.banca} | Lucro: ${data.risco.lucro} | Perda: ${data.risco.perda}`;
+        riscoSpan.classList.remove("limite-alto", "limite-crítico");
+        if (!data.risco.limites_ok) {
+            riscoSpan.classList.add("limite-crítico");
+        } else if (data.risco.perda >= (data.risco.banca * 0.5)) { // exemplo de alerta intermediário
+            riscoSpan.classList.add("limite-alto");
+        }
     } catch (err) {
         console.error("Erro ao atualizar estado:", err);
     }
@@ -69,6 +75,12 @@ enviarBtn.addEventListener("click", async () => {
         pontosSpan.textContent = data.pontos;
         padraoSpan.textContent = data.padrao_forte;
         riscoSpan.textContent = `Banca: ${data.risco.banca} | Lucro: ${data.risco.lucro} | Perda: ${data.risco.perda}`;
+        riscoSpan.classList.remove("limite-alto", "limite-crítico");
+        if (!data.risco.limites_ok) {
+            riscoSpan.classList.add("limite-crítico");
+        } else if (data.risco.perda >= (data.risco.banca * 0.5)) {
+            riscoSpan.classList.add("limite-alto");
+        }
     } catch (err) {
         console.error("Erro ao enviar entrada:", err);
     }
