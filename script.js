@@ -135,3 +135,9 @@ setInterval(rodarBot, 2000);
 
 // Atualiza status na primeira carga
 atualizarStatus();
+painel.innerHTML = historico.map((h, i) => {
+    const classe = h.decisao === "apostar" ? "apostar" : "esperar";
+    return `<div class="${classe}">
+        <strong>Rodada ${i+1}</strong>: Número ${h.rodada.numero}, Cor ${h.rodada.cor} → <em>${h.decisao}</em>
+    </div>`;
+}).join("");
