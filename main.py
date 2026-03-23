@@ -1,63 +1,59 @@
-from core.estado import atualizar_estado, estado
 from core.dados import validar_entrada
-from core.estatisticas import calcular_frequencia, detectar_rachas, detectar_alternancias
+from core.estado import atualizar_estado, estado
 from core.estrategias import analisar_estrategias
+from core.risco import atualizar_risco, verificar_limites, resetar_risco
+from config import settings
+from logs.logger import registrar_entrada
 
-def mostrar_estado():
-    print("\n=== ESTADO ATUAL ===")
-    print("Total jogadas:", estado["total_jogadas"])
-    print("Contagem:", estado["contagem"])
-    print("Sequência atual:", estado["sequencia_atual"])
-    print("====================\n")
+# Inicialização
+resetar_risco()
+estado["historico"].clear()
+estado["total_jogadas"] = 0
+estado["contagem"] = {"P":0,"B":0}
+estado["sequencia_atual"] = {"tipo":None,"tamanho":0}
 
-def mostrar_estatisticas():
-    freq = calcular_frequencia(estado["historico"])
-    rachas = detectar_rachas(estado["historico"])
-    alternancias = detectar_alternancias(estado["historico"])
-    
-    print("=== ESTATÍSTICAS ===")
-    print("Frequência:", freq)
-    print("Rachas:", rachas)
-    print("Alternâncias:", alternancias)
-    print("====================\n")
+print(f"Bot iniciado! Banca inicial: {settings.BANCA_INICIAL}, Aposta base: {settings.APOSTA_BASE}\n")
 
-def mostrar_estrategias():
-    analise = analisar_estrategias(estado["historico"])
-    
-    if not analise:
-        print("Nenhuma estratégia detectada ainda.\n")
-        return
-
-    # Calcula pontuação total
-    total_pontos = sum(item["pontos"] for item in analise)
-    
-    # Identifica padrão mais forte
-    padrao_forte = max(analise, key=lambda x: x["pontos"])
-    
-    print("=== ESTRATÉGIAS DETECTADAS ===")
-    for item in analise:
-        print(f"{item['tipo']} → Pontos: {item['pontos']} → Detalhes: {item['detalhes']}")
-    
-    print(f"\nPONTUAÇÃO TOTAL: {total_pontos}")
-    print(f"Padrão mais forte: {padrao_forte['tipo']} → Pontos: {padrao_forte['pontos']}\n")
-    print("==============================\n")
-
-# Loop interativo de teste
 while True:
-    entrada = input("Resultado (P/B ou Q para sair): ").strip().upper()
-    
+    entrada = input("Resultado (P/B) ou Q para sair: ").strip().upper()
     if entrada == "Q":
-        print("Encerrando teste...")
+        print("Encerrando bot...")
         break
 
     resultado = validar_entrada(entrada)
     if not resultado:
-        print("Entrada inválida. Use apenas P ou B.")
+        print("Entrada inválida. Use apenas P ou B.\n")
         continue
 
+    # Atualiza histórico e estado
     atualizar_estado(resultado)
-    
-    # Mostrar estado, estatísticas e estratégias com pontuação
-    mostrar_estado()
-    mostrar_estatisticas()
-    mostrar_estrategias()
+
+    # Detecta estratégias
+    analise = analisar_estrategias(estado["historico"])
+    total_pontos = sum(item["pontos"] for item in analise)
+    padrao_forte = max(analise, key=lambda x: x["pontos"])["tipo"] if analise else None
+
+    # Atualiza risco usando aposta base (simulação de vitória ou perda)
+    # Aqui você pode trocar "win"/"lose" dependendo da lógica futura
+    atualizar_risco(settings.APOSTA_BASE, "win")
+    limites_ok = verificar_limites()
+
+    # Registra no log
+    registrar_entrada(resultado["valor"], total_pontos, padrao_forte)
+
+    # Exibe informações ao usuário
+    print("\n--- ESTADO ATUAL ---")
+    print("Histórico:", estado["historico"])
+    print("Sequência atual:", estado["sequencia_atual"])
+    print("Contagem:", estado["contagem"])
+    print("--- ESTRATÉGIAS ---")
+    for item in analise:
+        print(f"{item['tipo']} → Pontos: {item['pontos']}")
+    print(f"Pontuação total: {total_pontos}")
+    print(f"Padrão mais forte: {padrao_forte}")
+    print(f"Limites de risco ok? {'Sim' if limites_ok else 'Não'}")
+    print("---------------------\n")
+
+    if not limites_ok:
+        print("Atingiu limite de perda ou lucro! Bot será encerrado automaticamente.")
+        break
