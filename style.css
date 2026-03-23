@@ -33,7 +33,8 @@ header h1 {
 
 main {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin: 30px 10px;
 }
 
@@ -44,6 +45,7 @@ main {
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    margin-bottom: 20px;
 }
 
 .tabela {
@@ -114,9 +116,29 @@ main {
 .decisao.azul { background-color: #3498db; }
 .decisao.amarelo { background-color: #f1c40f; color: #000; }
 
+#input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#input-container select, #input-container button {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+}
+
+#input-container button {
+    cursor: pointer;
+    background-color: #ffd700;
+    color: #1c1c1c;
+}
+
 @media (max-width: 700px) {
     .cabecalho, .linha {
         grid-template-columns: 60px 100px 1fr 120px;
     }
     #painel { padding: 15px; }
+    #input-container { flex-direction: column; gap: 6px; }
 }
