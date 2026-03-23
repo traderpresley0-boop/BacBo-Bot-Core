@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:5000"; // URL da sua API
+const API_URL = "https://meu-bacbo-api.onrender.com";
 
 const entradaInput = document.getElementById("entrada");
 const enviarBtn = document.getElementById("enviar");
