@@ -1,89 +1,88 @@
-let historicoUsuario = [
-    "vermelho", "azul", "vermelho", "vermelho", "amarelo", "azul"
-]; // O usuário pode atualizar manualmente o histórico
-
+let historicoUsuario = ["vermelho","azul","vermelho","vermelho","amarelo","azul"];
 let historicoSinais = [];
 
-// Estratégias do robô (modulares)
-function estrategiaUltimaCor(rodadas) {
-    if (rodadas.length === 0) return null;
-    return rodadas[rodadas.length - 1]; // repete a última cor
-}
-
-function estrategiaSequencia(rodadas) {
-    if (rodadas.length < 2) return null;
-    const ultima = rodadas[rodadas.length - 1];
-    const penultima = rodadas[rodadas.length - 2];
-    return ultima === penultima ? ultima : null;
-}
-
-function estrategiaMaioria(rodadas) {
-    if (rodadas.length === 0) return null;
-    const contagem = { vermelho: 0, azul: 0, amarelo: 0 };
-    rodadas.forEach(cor => contagem[cor]++);
-    let maior = "vermelho";
-    if (contagem.azul > contagem[maior]) maior = "azul";
-    if (contagem.amarelo > contagem[maior]) maior = "amarelo";
-    return maior;
-}
-
-function estrategiaAlternancia(rodadas) {
-    if (rodadas.length < 2) return null;
-    const ultima = rodadas[rodadas.length - 1];
-    const penultima = rodadas[rodadas.length - 2];
-    return ultima !== penultima ? ultima : null;
-}
-
-// Aplica todas as estratégias
-function aplicarEstrategias(historico) {
+// Função para gerar centenas de estratégias automaticamente
+function gerarSinais(historico){
     const sinais = [];
-    const e1 = estrategiaUltimaCor(historico); if (e1) sinais.push(e1);
-    const e2 = estrategiaSequencia(historico); if (e2) sinais.push(e2);
-    const e3 = estrategiaMaioria(historico); if (e3) sinais.push(e3);
-    const e4 = estrategiaAlternancia(historico); if (e4) sinais.push(e4);
+    const cores = ["vermelho","azul","amarelo"];
+
+    // Gera estratégias com janelas de 1 a 50 rodadas
+    for(let N=1; N<=50; N++){
+        const ultimas = historico.slice(-N);
+
+        if(!ultimas.length) continue;
+
+        // Última cor
+        sinais.push(ultimas[ultimas.length-1]);
+
+        // Maioria recente
+        const contagem = {vermelho:0, azul:0, amarelo:0};
+        ultimas.forEach(c => contagem[c]++);
+        let maior = "vermelho";
+        if(contagem.azul>contagem[maior]) maior="azul";
+        if(contagem.amarelo>contagem[maior]) maior="amarelo";
+        sinais.push(maior);
+
+        // Alternância
+        if(ultimas.length>=2){
+            const alt = ultimas[ultimas.length-1] !== ultimas[ultimas.length-2] ? ultimas[ultimas.length-1] : null;
+            if(alt) sinais.push(alt);
+        }
+
+        // Frequência de Tie
+        const contTie = ultimas.filter(c => c==="amarelo").length;
+        if(contTie >= 2) sinais.push("amarelo");
+    }
+
     return sinais;
 }
 
-// Decisão final baseado na maioria das estratégias
-function decidirFinal(sinais) {
-    const contagem = { vermelho: 0, azul: 0, amarelo: 0 };
-    sinais.forEach(cor => { if (cor) contagem[cor]++; });
-    let decisao = "vermelho";
-    if (contagem.azul > contagem[decisao]) decisao = "azul";
-    if (contagem.amarelo > contagem[decisao]) decisao = "amarelo";
+// Decisão final baseada na maioria dos sinais
+function decidirFinal(sinais){
+    const contagem = {vermelho:0, azul:0, amarelo:0};
+    sinais.forEach(c => { if(c) contagem[c]++ });
+    let decisao="vermelho";
+    if(contagem.azul>contagem[decisao]) decisao="azul";
+    if(contagem.amarelo>contagem[decisao]) decisao="amarelo";
     return decisao;
 }
 
-// Atualiza o painel de histórico
-function atualizarPainel() {
-    const linhasContainer = document.getElementById("linhas");
-    linhasContainer.innerHTML = "";
+// Atualiza painel
+function atualizarPainel(){
+    const container = document.getElementById("linhas");
+    container.innerHTML = "";
 
-    historicoUsuario.forEach((resultado, index) => {
-        const sinais = aplicarEstrategias(historicoUsuario.slice(0, index + 1));
+    historicoUsuario.forEach((res,index)=>{
+        const sinais = gerarSinais(historicoUsuario.slice(0,index+1));
         const decisao = decidirFinal(sinais);
-        historicoSinais[index] = { sinais, decisao };
+        historicoSinais[index] = {sinais,decisao};
 
         const linha = document.createElement("div");
         linha.classList.add("linha");
         linha.innerHTML = `
-            <div>${index + 1}</div>
-            <div class="resultado ${resultado}">${resultado}</div>
-            <div class="sinais">
-                ${sinais.map(s => `<div class="sinal ${s}"></div>`).join("")}
-            </div>
+            <div>${index+1}</div>
+            <div class="resultado ${res}">${res}</div>
+            <div class="sinais">${sinais.map(s=>`<div class="sinal ${s}"></div>`).join("")}</div>
             <div class="decisao ${decisao}">${decisao}</div>
         `;
-        linhasContainer.appendChild(linha);
+        container.appendChild(linha);
     });
 }
 
-// Atualiza o status
-function atualizarStatus() {
+// Atualiza status
+function atualizarStatus(){
     const statusElem = document.getElementById("status");
-    statusElem.innerHTML = `Status: <span class="ativo">Ativo</span>`;
+    statusElem.innerHTML=`Status: <span class="ativo">Ativo</span>`;
 }
 
-// Inicializa painel e status
+// Adicionar rodada manual
+document.getElementById("adicionarRodada").addEventListener("click",()=>{
+    const cor = document.getElementById("novaCor").value;
+    historicoUsuario.push(cor);
+    atualizarPainel();
+    atualizarStatus();
+});
+
+// Inicializa
 atualizarPainel();
 atualizarStatus();
