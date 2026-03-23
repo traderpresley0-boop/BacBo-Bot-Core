@@ -1,9 +1,93 @@
+/* ================================================== */
+/* BacBo Bot - Estilo completo para GitHub Pages    */
+/* ================================================== */
+
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f5f5f5;
+    margin: 20px;
+    background-color: #f2f2f2;
 }
 
 h1 {
+    text-align: center;
     color: #333;
+}
+
+#status {
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 18px;
+}
+
+#painel {
+    max-height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+#painel div {
+    padding: 5px;
+    margin: 3px 0;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#painel div.apostar {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+#painel div.esperar {
+    background-color: #FF9800; /* Laranja */
+    color: black;
+}
+
+#botoes {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#botoes button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#botoes button:hover {
+    opacity: 0.8;
+}
+
+#botoes button#iniciar {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#botoes button#parar {
+    background-color: #f44336;
+    color: white;
+}
+
+#botoes button#limpar {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* Responsividade básica */
+@media (max-width: 600px) {
+    #painel {
+        max-height: 300px;
+    }
+    #botoes button {
+        width: 80px;
+        font-size: 14px;
+        padding: 8px 10px;
+    }
 }
