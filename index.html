@@ -2,39 +2,61 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>BacBo Bot de Sinais</title>
+    <title>BacBo Bot de Sinais Profissional</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>BacBo Bot de Sinais</h1>
-        <div id="status">Status: <span class="ativo">Ativo</span></div>
-    </header>
+<header>
+    <h1>BacBo Bot de Sinais Profissional</h1>
+    <div id="status">Status: <span class="ativo">Ativo</span></div>
+</header>
 
-    <main>
-        <div id="painel">
-            <div class="tabela">
-                <div class="cabecalho">
-                    <div>Rodada</div>
-                    <div>Resultado</div>
-                    <div>Sinais</div>
-                    <div>Decisão Final</div>
-                </div>
-                <div id="linhas"></div>
+<main>
+    <div id="painel">
+        <div class="tabela">
+            <div class="cabecalho">
+                <div>Rodada</div>
+                <div>Resultado</div>
+                <div>Sinais</div>
+                <div>Decisão Final</div>
             </div>
+            <div id="linhas"></div>
         </div>
+    </div>
 
-        <div id="input-container">
-            <label for="novaCor">Adicionar rodada:</label>
-            <select id="novaCor">
-                <option value="vermelho">Vermelho (Banker)</option>
-                <option value="azul">Azul (Player)</option>
-                <option value="amarelo">Amarelo (Tie)</option>
-            </select>
-            <button id="adicionarRodada">Adicionar</button>
+    <div id="indicadores">
+        <h2>Frequência das cores</h2>
+        <div class="barra-container">
+            <div class="barra-label">Vermelho (Banker): <span id="cont-vermelho">0</span></div>
+            <div class="barra"><div id="bar-vermelho"></div></div>
+
+            <div class="barra-label">Azul (Player): <span id="cont-azul">0</span></div>
+            <div class="barra"><div id="bar-azul"></div></div>
+
+            <div class="barra-label">Amarelo (Tie): <span id="cont-amarelo">0</span></div>
+            <div class="barra"><div id="bar-amarelo"></div></div>
         </div>
-    </main>
+    </div>
 
-    <script src="script.js"></script>
+    <div id="grafico">
+        <h2>Gráfico de Tendência</h2>
+        <canvas id="tendenciaChart"></canvas>
+    </div>
+
+    <div id="input-container">
+        <label for="novaCor">Adicionar rodada:</label>
+        <select id="novaCor">
+            <option value="vermelho">Vermelho (Banker)</option>
+            <option value="azul">Azul (Player)</option>
+            <option value="amarelo">Amarelo (Tie)</option>
+        </select>
+        <button id="adicionarRodada">Adicionar</button>
+        <button id="resetHistorico">Resetar Histórico</button>
+        <button id="exportHistorico">Exportar Histórico</button>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
