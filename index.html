@@ -2,27 +2,33 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>BacBo Bot</title>
+    <title>BacBo Bot de Sinais</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>BacBo Bot</h1>
-    <div id="status">Carregando...</div>
-    <div id="painel"></div>
-    <div id="botoes">
-        <button id="iniciar">Iniciar</button>
-        <button id="parar">Parar</button>
-        <button id="limpar">Limpar Histórico</button>
-    </div>
+    <header>
+        <h1>BacBo Bot de Sinais</h1>
+        <div id="status">Status: <span class="ativo">Ativo</span></div>
+    </header>
+
+    <main>
+        <div id="painel">
+            <div class="tabela">
+                <div class="cabecalho">
+                    <div>Rodada</div>
+                    <div>Resultado</div>
+                    <div>Sinais</div>
+                    <div>Decisão Final</div>
+                </div>
+                <div id="linhas"></div>
+            </div>
+        </div>
+    </main>
 
     <script src="script.js"></script>
     <script>
-        document.getElementById("iniciar").addEventListener("click", () => { iniciarBot(); });
-        document.getElementById("parar").addEventListener("click", () => { pararBot(); });
-        document.getElementById("limpar").addEventListener("click", () => { limparHistorico(); });
-
-        atualizarStatus();
         atualizarPainel();
+        atualizarStatus();
     </script>
 </body>
 </html>
