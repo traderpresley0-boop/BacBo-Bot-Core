@@ -4,10 +4,88 @@
     <meta charset="UTF-8">
     <title>BacBo Bot</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+        #status {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        #painel {
+            max-height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+        }
+        #painel div {
+            padding: 5px;
+            margin: 3px 0;
+            border-radius: 5px;
+        }
+        #painel div.apostar {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #painel div.esperar {
+            background-color: #FF9800;
+            color: black;
+        }
+        #botoes {
+            margin-top: 15px;
+            text-align: center;
+        }
+        #botoes button {
+            margin: 0 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+        #botoes button:hover {
+            opacity: 0.8;
+        }
+        #botoes button#iniciar { background-color: #4CAF50; color: white; }
+        #botoes button#parar { background-color: #f44336; color: white; }
+        #botoes button#limpar { background-color: #2196F3; color: white; }
+    </style>
 </head>
 <body>
-    <h1>BacBo Bot Painel</h1>
+    <h1>BacBo Bot</h1>
     <div id="status">Carregando...</div>
+    <div id="painel"></div>
+    <div id="botoes">
+        <button id="iniciar">Iniciar</button>
+        <button id="parar">Parar</button>
+        <button id="limpar">Limpar Histórico</button>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        // Conecta os botões às funções do robô
+        document.getElementById("iniciar").addEventListener("click", () => {
+            iniciarBot();
+        });
+        document.getElementById("parar").addEventListener("click", () => {
+            pararBot();
+        });
+        document.getElementById("limpar").addEventListener("click", () => {
+            limparHistorico();
+        });
+
+        // Inicializa status e painel
+        atualizarStatus();
+        atualizarPainel();
+    </script>
 </body>
 </html>
