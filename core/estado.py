@@ -1,5 +1,4 @@
 # core/estado.py
-
 estado = {
     "historico": [],             # lista de resultados
     "total_jogadas": 0,          # contador total
@@ -10,12 +9,12 @@ estado = {
 def atualizar_estado(resultado):
     valor = resultado["valor"]
 
-    # Atualiza histórico
+    # Atualiza histórico e contagem
     estado["historico"].append(valor)
     estado["total_jogadas"] += 1
     estado["contagem"][valor] += 1
 
-    # Atualiza sequência
+    # Atualiza sequência atual
     if estado["sequencia_atual"]["tipo"] == valor:
         estado["sequencia_atual"]["tamanho"] += 1
     else:
