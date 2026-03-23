@@ -1,1 +1,1 @@
-
+# Inicializa o pacote core
