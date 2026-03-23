@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bac Bo Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bac Bo Bot</h1>
+
+        <div class="controls">
+            <input type="text" id="entrada" placeholder="Digite P ou B">
+            <button id="enviar">Enviar</button>
+            <button id="resetar">Resetar Bot</button>
+        </div>
+
+        <div class="info">
+            <h2>Estado Atual</h2>
+            <div id="historico" class="historico"></div>
+            <p><strong>Sequência atual:</strong> <span id="sequencia"></span></p>
+            <p><strong>Contagem:</strong> <span id="contagem"></span></p>
+            <p><strong>Pontuação total:</strong> <span id="pontos"></span></p>
+            <p><strong>Padrão mais forte:</strong> <span id="padrao"></span></p>
+            <p><strong>Risco:</strong> <span id="risco"></span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
