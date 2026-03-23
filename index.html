@@ -23,12 +23,18 @@
                 <div id="linhas"></div>
             </div>
         </div>
+
+        <div id="input-container">
+            <label for="novaCor">Adicionar rodada:</label>
+            <select id="novaCor">
+                <option value="vermelho">Vermelho (Banker)</option>
+                <option value="azul">Azul (Player)</option>
+                <option value="amarelo">Amarelo (Tie)</option>
+            </select>
+            <button id="adicionarRodada">Adicionar</button>
+        </div>
     </main>
 
     <script src="script.js"></script>
-    <script>
-        atualizarPainel();
-        atualizarStatus();
-    </script>
 </body>
 </html>
