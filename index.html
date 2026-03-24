@@ -2,53 +2,53 @@
 <html lang="pt">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BAC BO AI PRO</title>
+<title>AI HACK BOT</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="login">
-  <h1>🤖 BAC BO AI PRO</h1>
-  <p>Sistema Inteligente de Sinais</p>
-
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="senha" placeholder="Palavra-passe forte">
-  <button onclick="login()">ENTRAR</button>
+  <h1>🤖 AI HACK SYSTEM</h1>
+  <input type="email" placeholder="Email">
+  <input type="password" id="senha" placeholder="Password forte">
+  <button onclick="login()">ACESSAR</button>
 </div>
 
 <div id="app" class="hidden">
 
-  <header>
-    <h2>🚀 BOT ATIVO</h2>
-  </header>
+<header>
+  <h2>🤖 BAC BO AI</h2>
+  <span class="online">● ONLINE</span>
+</header>
 
-  <div class="card banca">
-    <p>Banca: <span id="banca">5000</span></p>
-    <p>Stop Loss: 2000</p>
-    <p>Meta: 3000</p>
+<div class="card signal" id="resultado">
+  <p>> SISTEMA PRONTO</p>
+</div>
+
+<button class="analisar" onclick="analisar()">ANALISAR SISTEMA</button>
+
+<div id="loading" class="hidden">> A ANALISAR PADRÕES...</div>
+
+<div class="card historico">
+  <div id="lista"></div>
+
+  <div class="btns">
+    <button onclick="add('azul')">🔵</button>
+    <button onclick="add('vermelho')">🔴</button>
+    <button onclick="add('amarelo')">🟡</button>
   </div>
+</div>
 
-  <div class="card historico">
-    <h3>Histórico</h3>
-    <div id="lista"></div>
+<div class="card banca">
+  <p>Banca: <span id="banca">5000</span></p>
+  <p>Stop: 2000</p>
+  <p>Meta: 3000</p>
+</div>
 
-    <div class="btns">
-      <button onclick="add('azul')">🔵</button>
-      <button onclick="add('vermelho')">🔴</button>
-      <button onclick="add('amarelo')">🟡</button>
-    </div>
-  </div>
-
-  <button class="analisar" onclick="analisar()">ANALISAR</button>
-
-  <div id="loading" class="hidden">🧠 A analisar padrões...</div>
-
-  <div id="resultado"></div>
-
-  <div class="controle">
-    <button onclick="win()">WIN</button>
-    <button onclick="loss()">LOSS</button>
-  </div>
+<div class="controle">
+  <button onclick="win()" class="win">WIN</button>
+  <button onclick="loss()" class="loss">LOSS</button>
+</div>
 
 </div>
 
