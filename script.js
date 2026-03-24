@@ -1,140 +1,114 @@
-let historicoUsuario = JSON.parse(localStorage.getItem("historico")) || [];
-let historicoSinais = [];
+let historico = JSON.parse(localStorage.getItem("historico")) || [];
+let banca = parseInt(localStorage.getItem("banca")) || 5000;
 
-function gerarSinais(historico){
-    const sinais = [];
-    const cores = ["vermelho","azul","amarelo"];
-    for(let N=1; N<=50; N++){
-        const ultimas = historico.slice(-N);
-        if(!ultimas.length) continue;
+function login() {
+  let senha = document.getElementById("senha").value;
 
-        sinais.push({cor: ultimas[ultimas.length-1], peso: 1 + N/50});
+  let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
-        const contagem = {vermelho:0, azul:0, amarelo:0};
-        ultimas.forEach(c => contagem[c]++);
-        let maior = "vermelho";
-        if(contagem.azul>contagem[maior]) maior="azul";
-        if(contagem.amarelo>contagem[maior]) maior="amarelo";
-        sinais.push({cor: maior, peso: 1 + N/50});
+  if (!regex.test(senha)) {
+    alert("Senha fraca!");
+    return;
+  }
 
-        if(ultimas.length>=2){
-            const alt = ultimas[ultimas.length-1] !== ultimas[ultimas.length-2] ? ultimas[ultimas.length-1] : null;
-            if(alt) sinais.push({cor: alt, peso: 0.5});
-        }
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").classList.remove("hidden");
 
-        const contTie = ultimas.filter(c => c==="amarelo").length;
-        if(contTie>=2) sinais.push({cor:"amarelo", peso:1});
-    }
-    return sinais;
+  atualizar();
+  atualizarBanca();
 }
 
-function decidirFinal(sinais){
-    const contagem = {vermelho:0, azul:0, amarelo:0};
-    sinais.forEach(s => { if(s) contagem[s.cor] += s.peso; });
-    let decisao="vermelho";
-    if(contagem.azul>contagem[decisao]) decisao="azul";
-    if(contagem.amarelo>contagem[decisao]) decisao="amarelo";
-    return decisao;
+function add(cor) {
+  historico.push(cor);
+  localStorage.setItem("historico", JSON.stringify(historico));
+  atualizar();
 }
 
-function atualizarBarras(){
-    const contagem = {vermelho:0, azul:0, amarelo:0};
-    historicoUsuario.forEach(c => contagem[c]++);
-    const total = historicoUsuario.length || 1;
+function atualizar() {
+  let lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-    document.getElementById("cont-vermelho").innerText = contagem.vermelho;
-    document.getElementById("cont-azul").innerText = contagem.azul;
-    document.getElementById("cont-amarelo").innerText = contagem.amarelo;
+  historico.slice(-15).forEach(c => {
+    let span = document.createElement("span");
 
-    document.getElementById("bar-vermelho").style.width = (contagem.vermelho/total*100) + "%";
-    document.getElementById("bar-azul").style.width = (contagem.azul/total*100) + "%";
-    document.getElementById("bar-amarelo").style.width = (contagem.amarelo/total*100) + "%";
+    if (c === "azul") span.innerHTML = "🔵";
+    if (c === "vermelho") span.innerHTML = "🔴";
+    if (c === "amarelo") span.innerHTML = "🟡";
+
+    lista.appendChild(span);
+  });
 }
 
-function atualizarPainel(){
-    const container = document.getElementById("linhas");
-    container.innerHTML = "";
-    let datasetDecisao = [];
+/* MULTI ESTRATÉGIAS */
+function analisar() {
+  document.getElementById("resultado").innerHTML = "";
+  document.getElementById("loading").classList.remove("hidden");
 
-    historicoUsuario.forEach((res,index)=>{
-        const sinais = gerarSinais(historicoUsuario.slice(0,index+1));
-        const decisao = decidirFinal(sinais);
-        historicoSinais[index] = {sinais,decisao};
-        datasetDecisao.push(decisao);
+  setTimeout(() => {
 
-        const linha = document.createElement("div");
-        linha.classList.add("linha");
-        linha.innerHTML = `
-            <div>${index+1}</div>
-            <div class="resultado ${res}">${res}</div>
-            <div class="sinais">${sinais.map(s=>`<div class="sinal ${s.cor}"></div>`).join("")}</div>
-            <div class="decisao ${decisao}">${decisao}</div>
-        `;
-        container.appendChild(linha);
-    });
+    let ultimos = historico.slice(-5);
 
-    atualizarBarras();
-    atualizarGrafico(datasetDecisao);
+    let estrategia1 = tendencia(ultimos);
+    let estrategia2 = reversao(ultimos);
+    let estrategia3 = alternancia(ultimos);
+
+    let final = escolherMelhor([estrategia1, estrategia2, estrategia3]);
+
+    document.getElementById("loading").classList.add("hidden");
+    document.getElementById("resultado").innerHTML =
+      "🎯 " + final + "<br>🟡 Proteção: EMPATE";
+
+  }, 2500);
 }
 
-function atualizarStatus(){
-    const statusElem = document.getElementById("status");
-    statusElem.innerHTML=`Status: <span class="ativo">Ativo</span>`;
+/* ESTRATÉGIAS */
+
+function tendencia(arr) {
+  let azul = arr.filter(x => x === "azul").length;
+  let vermelho = arr.filter(x => x === "vermelho").length;
+  return azul > vermelho ? "🔵 BIG" : "🔴 SMALL";
 }
 
-document.getElementById("adicionarRodada").addEventListener("click",()=>{
-    const cor = document.getElementById("novaCor").value;
-    historicoUsuario.push(cor);
-    localStorage.setItem("historico", JSON.stringify(historicoUsuario));
-    atualizarPainel();
-    atualizarStatus();
-});
-
-document.getElementById("resetHistorico").addEventListener("click",()=>{
-    historicoUsuario = [];
-    localStorage.removeItem("historico");
-    atualizarPainel();
-    atualizarStatus();
-});
-
-document.getElementById("exportHistorico").addEventListener("click",()=>{
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(historicoUsuario));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download","historico_bacbo.json");
-    dlAnchor.click();
-});
-
-let chart=null;
-function atualizarGrafico(decisoes){
-    const ctx = document.getElementById('tendenciaChart').getContext('2d');
-    const labels = decisoes.map((_,i)=>i+1);
-
-    if(chart) chart.destroy();
-    chart = new Chart(ctx,{
-        type:'line',
-        data:{
-            labels: labels,
-            datasets:[{
-                label:'Decisão Final',
-                data:decisoes.map(d=>d==="vermelho"?1:d==="azul"?2:3),
-                fill:false,
-                borderColor:'#ffd700',
-                tension:0.3
-            }]
-        },
-        options:{
-            scales:{
-                y:{
-                    ticks:{
-                        callback:function(val){ return val===1?"Vermelho":val===2?"Azul":"Amarelo"; }
-                    },
-                    min:0.8, max:3.2
-                }
-            }
-        }
-    });
+function reversao(arr) {
+  let ultimo = arr[arr.length - 1];
+  return ultimo === "azul" ? "🔴 SMALL" : "🔵 BIG";
 }
 
-atualizarPainel();
-atualizarStatus();
+function alternancia(arr) {
+  let ultimo = arr[arr.length - 1];
+  let penultimo = arr[arr.length - 2];
+
+  if (ultimo !== penultimo) return ultimo === "azul" ? "🔴 SMALL" : "🔵 BIG";
+  return "🔵 BIG";
+}
+
+/* ESCOLHER MELHOR */
+function escolherMelhor(lista) {
+  let random = Math.floor(Math.random() * lista.length);
+  return lista[random];
+}
+
+/* BANCA */
+
+function win() {
+  banca += 1000;
+  salvarBanca();
+}
+
+function loss() {
+  banca -= 1000;
+  salvarBanca();
+
+  if (banca <= 2000) {
+    alert("⚠️ STOP LOSS ATINGIDO!");
+  }
+}
+
+function salvarBanca() {
+  localStorage.setItem("banca", banca);
+  atualizarBanca();
+}
+
+function atualizarBanca() {
+  document.getElementById("banca").innerText = banca;
+}
