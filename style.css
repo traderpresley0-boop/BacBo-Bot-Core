@@ -1,8 +1,8 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #0a0f2c, #000);
-  color: white;
+  font-family: monospace;
+  background: radial-gradient(circle, #020202, #000814);
+  color: #00ff9f;
   text-align: center;
 }
 
@@ -14,12 +14,10 @@ body {
 input {
   width: 90%;
   padding: 15px;
-  margin: 10px 0;
-  border-radius: 12px;
-  border: none;
-  background: #111;
-  color: white;
-  font-size: 16px;
+  margin: 10px;
+  background: #000;
+  border: 1px solid #00ff9f;
+  color: #00ff9f;
 }
 
 /* BOTÕES */
@@ -27,12 +25,9 @@ button {
   width: 90%;
   padding: 15px;
   margin-top: 10px;
-  border-radius: 12px;
-  border: none;
-  font-size: 16px;
-  background: linear-gradient(45deg, #00f0ff, #0077ff);
-  color: white;
-  font-weight: bold;
+  background: transparent;
+  border: 1px solid #00ff9f;
+  color: #00ff9f;
 }
 
 /* APP */
@@ -44,52 +39,54 @@ header {
   padding: 20px;
 }
 
+.online {
+  color: lime;
+}
+
 /* CARDS */
 .card {
   margin: 15px;
   padding: 20px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
+  border: 1px solid #00ff9f;
+}
+
+/* SINAL */
+.signal {
+  font-size: 22px;
 }
 
 /* HISTÓRICO */
 #lista span {
-  font-size: 26px;
-  margin: 4px;
+  font-size: 28px;
+  margin: 5px;
 }
 
 /* BOTÕES PEQUENOS */
 .btns button {
   width: 60px;
-  font-size: 20px;
 }
 
 /* ANALISAR */
 .analisar {
-  background: linear-gradient(45deg, #00ffcc, #00bfff);
-}
-
-/* RESULTADO */
-#resultado {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
+  border: 2px solid #00ff9f;
+  animation: pulse 1s infinite;
 }
 
 /* CONTROLE */
-.controle button {
-  width: 40%;
+.win {
+  border-color: lime;
+}
+
+.loss {
+  border-color: red;
 }
 
 /* LOADING */
 #loading {
   margin-top: 20px;
-  font-size: 18px;
-  color: cyan;
-  animation: pulse 1s infinite;
 }
 
+/* ANIMAÇÃO */
 @keyframes pulse {
   0% {opacity: 0.3;}
   50% {opacity: 1;}
